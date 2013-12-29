@@ -1,5 +1,6 @@
 package com.lexecc.wk2014;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -58,18 +60,36 @@ public class PlayedFragment extends Fragment implements RetrieveTaskResponse {
             ArrayList<Game> games = new ArrayList<Game>();
 
             JSONArray jArray = new JSONArray(data);
-            for (int i = 0; i < jArray.length(); i++) {
-                JSONObject item = jArray.getJSONObject(i);
-                JSONObject itemDate = item.getJSONObject("Date");
-                Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(itemDate.getString("date"));
+            for (int i = 0; i < jArray.length(); i += 2) {
+                JSONObject jGame = jArray.getJSONObject(i);
+                JSONObject jGameDate = jGame.getJSONObject("Date");
+                JSONObject jBet = null;
+                if (!jArray.isNull(i + 1)) {
+                    jBet = jArray.getJSONObject(i + 1);
+                }
 
-                Game game = new Game(item.getInt("ID"), date, item.getString("Team1"), item.getString("Team2"),
-                        item.getInt("ScoreTeam1"), item.getInt("ScoreTeam2"), item.getInt("PronoTeam1"), item.getInt("PronoTeam2"), item.getInt("Points"));
+                Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(jGameDate.getString("date"));
+                Game game = new Game(jGame.getInt("ID"), date, jGame.getString("Team1"), jGame.getString("Team2"), jGame.getInt("ScoreTeam1"), jGame.getInt("ScoreTeam2"),
+                        (jBet == null) ? -1 : jBet.getInt("ScoreTeam1"), (jBet == null) ? -1 : jBet.getInt("ScoreTeam2"), (jBet == null) ? 0 : jBet.getInt("Points"));
                 games.add(game);
             }
 
             ListView lv = (ListView)getActivity().findViewById(R.id.lsvPlayed);
             lv.setAdapter(new ListAdapter(getActivity(), games));
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
+                    // get data
+                    Game game = (Game)view.getTag();
+
+                    // set data
+                    Intent intent = new Intent(getActivity(), GameStatActivity.class);
+                    intent.putExtra(GameStatActivity.GAME_ID, game.getID());
+                    startActivity(intent);
+                }
+
+            });
         }
         catch (Exception e) {
             if (getActivity() != null) {
@@ -146,7 +166,6 @@ public class PlayedFragment extends Fragment implements RetrieveTaskResponse {
             if (games.get(position).getScoreTeam2() >= 0) txtTeam2Score.setText(Integer.toString(games.get(position).getScoreTeam2()));
             txtTime.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(games.get(position).getDate()));
             if (games.get(position).getPronoTeam1() >= 0 && games.get(position).getPronoTeam2() >= 0) txtProno.setText("Prono: " + games.get(position).getPronoTeam1() + " - " + games.get(position).getPronoTeam2());
-            else txtProno.setText("Prono: -");
             txtResult.setText(games.get(position).getPoints() + " Point" + (games.get(position).getPoints() != 1 ? "s" : ""));
 
             return retVal;

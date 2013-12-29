@@ -66,13 +66,17 @@ public class UpcomingFragment extends Fragment implements RetrieveTaskResponse {
             ArrayList<Game> games = new ArrayList<Game>();
 
             JSONArray jArray = new JSONArray(data);
-            for (int i = 0; i < jArray.length(); i++) {
-                JSONObject item = jArray.getJSONObject(i);
-                JSONObject itemDate = item.getJSONObject("Date");
-                Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(itemDate.getString("date"));
+            for (int i = 0; i < jArray.length(); i += 2) {
+                JSONObject jGame = jArray.getJSONObject(i);
+                JSONObject jGameDate = jGame.getJSONObject("Date");
+                JSONObject jBet = null;
+                if (!jArray.isNull(i + 1)) {
+                    jBet = jArray.getJSONObject(i + 1);
+                }
 
-                Game game = new Game(item.getInt("ID"), date, item.getString("Team1"), item.getString("Team2"),
-                        item.getInt("ScoreTeam1"), item.getInt("ScoreTeam2"), item.getInt("PronoTeam1"), item.getInt("PronoTeam2"), item.getInt("Points"));
+                Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(jGameDate.getString("date"));
+                Game game = new Game(jGame.getInt("ID"), date, jGame.getString("Team1"), jGame.getString("Team2"), jGame.getInt("ScoreTeam1"), jGame.getInt("ScoreTeam2"),
+                        (jBet == null) ? -1 : jBet.getInt("ScoreTeam1"), (jBet == null) ? -1 : jBet.getInt("ScoreTeam2"), (jBet == null) ? 0 : jBet.getInt("Points"));
                 games.add(game);
             }
 

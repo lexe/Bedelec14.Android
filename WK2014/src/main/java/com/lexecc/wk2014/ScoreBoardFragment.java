@@ -60,7 +60,7 @@ public class ScoreBoardFragment extends Fragment implements RetrieveTaskResponse
             JSONArray jArray = new JSONArray(data);
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject item = jArray.getJSONObject(i);
-                User user = new User(item.getInt("ID"), item.getString("Name"), item.getInt("Score"));
+                User user = new User(item.getInt("ID"), item.getString("Name"), item.getInt("Points"));
                 users.add(user);
             }
 

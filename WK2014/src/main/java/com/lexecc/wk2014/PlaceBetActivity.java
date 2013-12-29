@@ -27,7 +27,7 @@ public class PlaceBetActivity extends ActionBarActivity implements RetrieveTaskR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_bet);
 
-        this.setTitle("Update prono");
+        this.setTitle("Update Prono");
 
         Intent intent = getIntent();
         mGameID = intent.getIntExtra("GAME_ID", 0);
