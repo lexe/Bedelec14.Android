@@ -58,6 +58,7 @@ public class GameStatActivity extends Activity implements RetrieveTaskResponse {
     public void dataReceived(String data) {
         try
         {
+            Log.e("WK2014", data);
             Game game = null;
             ArrayList<Bet> bets = new ArrayList<Bet>();
 
@@ -70,8 +71,8 @@ public class GameStatActivity extends Activity implements RetrieveTaskResponse {
                     JSONObject itemDate = item.getJSONObject("Date");
                     Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(itemDate.getString("date"));
 
-                    game = new Game(item.getInt("ID"), date, item.getString("Team1"), item.getString("Team2"),
-                            item.getInt("ScoreTeam1"), item.getInt("ScoreTeam2"), item.getInt("PronoTeam1"), item.getInt("PronoTeam2"), item.getInt("Points"));
+                    game = new Game(item.getInt("ID"), date, item.getString("Team1"), item.getString("Team2"), item.getInt("ScoreTeam1"), item.getInt("ScoreTeam2"),
+                            0, 0, 0);
                 }
                 else {
                     // bet object
@@ -81,6 +82,7 @@ public class GameStatActivity extends Activity implements RetrieveTaskResponse {
             }
 
             // display game data
+            TextView txtDate = (TextView)findViewById(R.id.txtDate);
             ImageView imgTeam1 = (ImageView)findViewById(R.id.imgTeam1);
             ImageView imgTeam2 = (ImageView)findViewById(R.id.imgTeam2);
             TextView txtTeam1 = (TextView)findViewById(R.id.txtTeam1);
@@ -88,6 +90,7 @@ public class GameStatActivity extends Activity implements RetrieveTaskResponse {
             TextView txtTeam1Score = (TextView)findViewById(R.id.txtTeam1Score);
             TextView txtTeam2Score = (TextView)findViewById(R.id.txtTeam2Score);
             TextView txtTime = (TextView)findViewById(R.id.txtTime);
+            txtDate.setText(new SimpleDateFormat("EEEE d MMMM", Locale.getDefault()).format(game.getDate()));
             imgTeam1.setImageResource(getResources().getIdentifier(game.getImage(1), "drawable", getPackageName()));
             imgTeam2.setImageResource(getResources().getIdentifier(game.getImage(2), "drawable", getPackageName()));
             txtTeam1.setText(game.getTeam1());

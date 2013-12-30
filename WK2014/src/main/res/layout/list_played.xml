@@ -48,7 +48,7 @@
         <ImageView
             android:layout_width="62dp"
             android:layout_height="40dp"
-            android:id="@+id/imgTeam2"
+            android:id="@+id/imgTeam1"
             android:src="@drawable/algerije"
             android:scaleType="fitXY"
             android:paddingLeft="2dp" />
@@ -103,7 +103,7 @@
         <ImageView
             android:layout_width="62dp"
             android:layout_height="40dp"
-            android:id="@+id/imgTeam1"
+            android:id="@+id/imgTeam2"
             android:src="@drawable/algerije"
             android:scaleType="fitXY"
             android:paddingRight="2dp" />
